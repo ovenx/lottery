@@ -74,16 +74,11 @@ export const usePrizeConfig = defineStore('prize', {
         // 更新奖项数据
         updatePrizeConfig(prizeConfigItem: IPrizeConfig) {
             const prizeListLength = this.prizeConfig.prizeList.length;
-            if (prizeConfigItem.isUsed && prizeListLength) {
-                for (let i = 0; i < prizeListLength; i++) {
-                    if (!this.prizeConfig.prizeList[i].isUsed) {
-                        this.setCurrentPrize(this.prizeConfig.prizeList[i]);
-                        break;
-                    }
+            this.setCurrentPrize(prizeConfigItem)
+            for (let i = 0; i < prizeListLength; i++) {
+                if (this.prizeConfig.prizeList[i].id == prizeConfigItem.id) {
+                  this.prizeConfig.prizeList[i] = prizeConfigItem
                 }
-            }
-            else {
-                return
             }
             this.resetTemporaryPrize()
         },

@@ -85,6 +85,7 @@ for(let i=0;i<localPrizeList.value.length;i++){
 }
 onMounted(() => {
     prizeListContainerRef.value.style.height = getPrizeListHeight() + 'px'
+    console.log(localPrizeList.value)
     //setCurrentPrize()
 })
 </script>

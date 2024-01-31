@@ -26,7 +26,7 @@ export interface IPrizeConfig {
     isAll: boolean;
     count: number;
     isUsedCount: number,
-    picture?: {
+    picture: {
         id: string | number,
         name: string,
         url: string

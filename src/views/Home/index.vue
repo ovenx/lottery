@@ -421,7 +421,7 @@ const startLottery = () => {
         }
     }
     toast.open({
-        message: `现在抽取${currentPrize.value.name} ${leftover}人`,
+        message: `现在抽取${currentPrize.value.name} ${luckyCount.value}人`,
         type:'default',
         position: 'top-right',
         duration: 8000
@@ -480,17 +480,18 @@ const continueLottery = async () => {
         return
     }
 
-    const customCount = currentPrize.value.separateCount
-    if (customCount && customCount.enable && customCount.countList.length > 0) {
-        for (let i = 0; i < customCount.countList.length; i++) {
-            if (customCount.countList[i].isUsedCount < customCount.countList[i].count) {
-                customCount.countList[i].isUsedCount += luckyCount.value
-                break;
-            }
-        }
-    }
+    // const customCount = currentPrize.value.separateCount
+    // if (customCount && customCount.enable && customCount.countList.length > 0) {
+    //     for (let i = 0; i < customCount.countList.length; i++) {
+    //         if (customCount.countList[i].isUsedCount < customCount.countList[i].count) {
+    //             customCount.countList[i].isUsedCount += luckyCount.value
+    //             break;
+    //         }
+    //     }
+    // }
     currentPrize.value.isUsedCount += luckyCount.value
-    luckyCount.value = 0
+    luckyCount.value = 1
+    console.log(currentPrize.value.isUsedCount)
     if (currentPrize.value.isUsedCount >= currentPrize.value.count) {
         currentPrize.value.isUsed = true
         currentPrize.value.isUsedCount = currentPrize.value.count

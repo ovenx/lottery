@@ -88,8 +88,23 @@ export const usePersonConfig = defineStore('person', {
                 return
             }
             const alreadyPersonListLength = this.personConfig.alreadyPersonList.length
+            const prizeConfig = usePrizeConfig()
+            const prizeList = prizeConfig.prizeConfig.prizeList
             for (let i = 0; i < this.personConfig.allPersonList.length; i++) {
                 if (person.id === this.personConfig.allPersonList[i].id) {
+                    console.log(this.personConfig.allPersonList[i].prizeId)
+                    for (const prizeID of this.personConfig.allPersonList[i].prizeId) {
+                      for (const index in prizeList) {
+                        if (prizeList[index].id ==  prizeID) {
+                          prizeConfig.prizeConfig.prizeList[index].isUsedCount--
+                          prizeConfig.prizeConfig.prizeList[index].isUsed = false
+                          if (prizeConfig.prizeConfig.currentPrize && prizeConfig.prizeConfig.currentPrize.id == prizeID) {
+                            prizeConfig.prizeConfig.currentPrize = prizeConfig.prizeConfig.prizeList[index]
+                          }  
+                        }
+                      }
+                    }
+
                     this.personConfig.allPersonList[i].isWin = false
                     this.personConfig.allPersonList[i].prizeName = []
                     this.personConfig.allPersonList[i].prizeTime = []
