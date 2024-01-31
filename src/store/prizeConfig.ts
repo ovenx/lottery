@@ -28,6 +28,7 @@ export const usePrizeConfig = defineStore('prize', {
                     isShow: false,
                     isUsed: false,
                     frequency: 1,
+                    category: [],
                 } as IPrizeConfig
             }
         };
@@ -129,6 +130,7 @@ export const usePrizeConfig = defineStore('prize', {
                 isShow: false,
                 isUsed: false,
                 frequency: 1,
+                category: [],
             } as IPrizeConfig;
         },
         // 重置所有配置
@@ -156,6 +158,7 @@ export const usePrizeConfig = defineStore('prize', {
                     isShow: false,
                     isUsed: false,
                     frequency: 1,
+                    category: [],
                 } as IPrizeConfig
             }
         }

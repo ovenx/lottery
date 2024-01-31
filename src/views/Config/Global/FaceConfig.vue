@@ -150,6 +150,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <div>
      <dialog id="my_modal_1" ref="resetDataDialogRef" class="border-none modal">
         <div class="modal-box">
             <h3 class="text-lg font-bold">提示!</h3>
@@ -289,6 +290,7 @@ onMounted(() => {
         </label>
 
     </div>
+  </div>
 </template>
 
 <style lang='scss' scoped></style>

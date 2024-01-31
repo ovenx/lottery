@@ -29,7 +29,7 @@ const personConfig = useStore().personConfig
 const globalConfig = useStore().globalConfig
 const prizeConfig = useStore().prizeConfig
 
-const { getAllPersonList: allPersonList, getNotPersonList: notPersonList, getNotThisPrizePersonList: notThisPrizePersonList } = storeToRefs(personConfig)
+const { getAllPersonList: allPersonList, getNotPersonList: notPersonList, getNotThisPrizePersonList: notThisPrizePersonList, getThisPrizePersonList: thisPrizePersonList } = storeToRefs(personConfig)
 const { getCurrentPrize: currentPrize } = storeToRefs(prizeConfig)
 const { getTopTitle: topTitle, getCardColor: cardColor, getPatterColor: patternColor, getPatternList: patternList, getTextColor: textColor, getLuckyColor: luckyColor, getCardSize: cardSize, getTextSize: textSize, getRowCount: rowCount } = storeToRefs(globalConfig)
 const tableData = ref<any[]>([])
@@ -358,8 +358,6 @@ const enterLottery = async () => {
     if (!canOperate.value) {
         return
     }
-    console.log('cccccccccc')
-    console.log(allPersonList.value.length)
     if (!intervalTimer.value && allPersonList.value.length > 0) {
         randomBallData()
     }
@@ -380,8 +378,17 @@ const startLottery = () => {
     if (!canOperate.value || !currentPrize.value) {
         return
     }
+    if (luckyID.value == '') {
+      toast.open({
+            message: '请选择奖项',
+            type: 'warning',
+            position: 'top-right',
+            duration: 10000
+        })
+        return
+    }
     // 验证是否已抽完全部奖项
-    if (currentPrize.value.isUsed || !currentPrize.value) {
+    if (currentPrize.value.isUsed) {
         toast.open({
             message: '抽奖抽完了',
             type: 'warning',
@@ -390,18 +397,7 @@ const startLottery = () => {
         })
         return
     }
-    personPool.value = currentPrize.value.isAll ? notThisPrizePersonList.value : notPersonList.value
 
-    // 验证抽奖人数是否还够
-    if (personPool.value.length < currentPrize.value.count - currentPrize.value.isUsedCount) {
-        toast.open({
-            message: '抽奖人数不够',
-            type: 'warning',
-            position: 'top-right',
-            duration: 10000
-        })
-        return;
-    }
     let leftover = currentPrize.value.count - currentPrize.value.isUsedCount
     if (luckyCount.value > leftover) {
       toast.open({
@@ -413,12 +409,43 @@ const startLottery = () => {
         return;
     }
   
+
+    personPool.value = currentPrize.value.isAll ? notThisPrizePersonList.value : notPersonList.value
+   
+
+    // 验证抽奖人数是否还够
+    if (personPool.value.length < luckyCount.value) {
+        toast.open({
+            message: '抽奖人数不够',
+            type: 'warning',
+            position: 'top-right',
+            duration: 10000
+        })
+        return;
+    }
+    let usedCateogryTarget = [[] as number[], [] as number[]]
     for (let i = 0; i < luckyCount.value; i++) {
-        if (personPool.value.length > 0) {
+      if (currentPrize.value.category.length > 0) {
+        for (const target of thisPrizePersonList.value) {
+          usedCateogryTarget[target.category - 1].push(target.id)
+        }
+        for (const index in currentPrize.value.category) {
+          if (currentPrize.value.category[index] - usedCateogryTarget[index].length) {
+            personPool.value = notPersonList.value.filter(v => v.category == Number(index)+1 && !usedCateogryTarget[Number(index)].includes(v.id))
             const randomIndex = Math.round(Math.random() * (personPool.value.length - 1))
             luckyTargets.value.push(personPool.value[randomIndex])
+            usedCateogryTarget[index].push(personPool.value[randomIndex].id)
             personPool.value.splice(randomIndex, 1)
+            break
+          }
         }
+      } else {
+        if (personPool.value.length > 0) {
+          const randomIndex = Math.round(Math.random() * (personPool.value.length - 1))
+          luckyTargets.value.push(personPool.value[randomIndex])
+          personPool.value.splice(randomIndex, 1)
+        }
+      }
     }
     toast.open({
         message: `现在抽取${currentPrize.value.name} ${luckyCount.value}人`,
@@ -490,7 +517,7 @@ const continueLottery = async () => {
     //     }
     // }
     currentPrize.value.isUsedCount += luckyCount.value
-    luckyCount.value = 1
+    
     console.log(currentPrize.value.isUsedCount)
     if (currentPrize.value.isUsedCount >= currentPrize.value.count) {
         currentPrize.value.isUsed = true
@@ -498,6 +525,8 @@ const continueLottery = async () => {
     }
     personConfig.addAlreadyPersonList(luckyTargets.value, currentPrize.value)
     prizeConfig.updatePrizeConfig(currentPrize.value)
+    luckyID.value = ''
+    luckyCount.value = 1
     await enterLottery()
 }
 const quitLottery = () => {
@@ -667,7 +696,7 @@ onUnmounted(() => {
                   <option disabled selected  value="">选择奖项</option>
                   <option v-for="item in prizeConfig.prizeConfig.prizeList"  :value="item.id">{{ item.name }}</option>
                 </select>
-                <div v-if="currentPrize" class="text-sm text-red-400 mr-4">
+                <div v-if="currentPrize && luckyID" class="text-sm text-pink-400 font-bold mr-4">
                   剩余数量 {{ currentPrize.count - currentPrize.isUsedCount }}
                 </div>
                 <input type="number" v-model="luckyCount" placeholder="抽奖数量" 

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { IPersonConfig } from '@/types/storeType';
 import { IPrizeConfig } from '@/types/storeType';
-import { defaultPersonList } from './data'
+import { defaultPersonList, defaultPrizeList } from './data'
 import { usePrizeConfig } from './prizeConfig';
 import dayjs from 'dayjs'
 export const usePersonConfig = defineStore('person', {
@@ -27,18 +27,37 @@ export const usePersonConfig = defineStore('person', {
         // 获取未获此奖的人员名单
         getNotThisPrizePersonList(state: any) {
             const currentPrize = usePrizeConfig().prizeConfig.currentPrize;
+            if (!currentPrize) {
+              return []
+            }
             const data = state.personConfig.allPersonList.filter((item: IPersonConfig) => {
                 return !item.prizeId.includes(currentPrize.id as string);
             });
 
             return data
         },
+
+        // 获取已中此奖人员名单
+        getThisPrizePersonList(state) {
+          const currentPrize = usePrizeConfig().prizeConfig.currentPrize;
+          if (!currentPrize) {
+            return []
+          }
+          const data = state.personConfig.allPersonList.filter((item: IPersonConfig) => {
+              return item.prizeId.includes(currentPrize.id as string);
+          });
+          return data
+        },
+
         // 获取已中奖人员名单
         getAlreadyPersonList(state) {
             return state.personConfig.allPersonList.filter((item: IPersonConfig) => {
                 return item.isWin === true;
             });
         },
+
+        
+
         // 获取中奖人员详情
         getAlreadyPersonDetail(state) {
             return state.personConfig.alreadyPersonList
@@ -92,15 +111,12 @@ export const usePersonConfig = defineStore('person', {
             const prizeList = prizeConfig.prizeConfig.prizeList
             for (let i = 0; i < this.personConfig.allPersonList.length; i++) {
                 if (person.id === this.personConfig.allPersonList[i].id) {
-                    console.log(this.personConfig.allPersonList[i].prizeId)
                     for (const prizeID of this.personConfig.allPersonList[i].prizeId) {
                       for (const index in prizeList) {
-                        if (prizeList[index].id ==  prizeID) {
+                        if (prizeList[index].id == prizeID) {
                           prizeConfig.prizeConfig.prizeList[index].isUsedCount--
                           prizeConfig.prizeConfig.prizeList[index].isUsed = false
-                          if (prizeConfig.prizeConfig.currentPrize && prizeConfig.prizeConfig.currentPrize.id == prizeID) {
-                            prizeConfig.prizeConfig.currentPrize = prizeConfig.prizeConfig.prizeList[index]
-                          }  
+                          prizeConfig.prizeConfig.currentPrize = null                   
                         }
                       }
                     }
@@ -141,11 +157,14 @@ export const usePersonConfig = defineStore('person', {
         resetAlreadyPerson() {
             // 把已中奖人员合并到未中奖人员，要验证是否已存在
             this.personConfig.allPersonList.forEach((item: IPersonConfig) => {
-                item.isWin = false;
-                item.prizeName = [];
-                item.prizeTime = [];
-                item.prizeId = []
+              item.isWin = false;
+              item.prizeName = [];
+              item.prizeTime = [];
+              item.prizeId = []
             });
+            const prizeConfig = usePrizeConfig()
+            prizeConfig.prizeConfig.prizeList = defaultPrizeList
+            prizeConfig.prizeConfig.currentPrize = null
             this.personConfig.alreadyPersonList = [];
         },
         setDefaultPersonList() {

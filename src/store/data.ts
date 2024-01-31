@@ -2,6 +2,7 @@ import { IPrizeConfig, IPersonConfig } from '@/types/storeType';
 import musicUrl from '@/assets/music.mp3'
 import image1 from '@/assets/image1.png'
 import image2 from '@/assets/image2.png'
+import { Nullable } from 'vitest';
 
 export const defaultPersonList = <IPersonConfig[]> []
 export const defaultMusicList = [
@@ -33,6 +34,7 @@ export const defaultPrizeList = <IPrizeConfig[]>[
         isShow: true,
         isUsed: false,
         frequency: 1,
+        category: [1,0],
     },
     {
         id: '002',
@@ -54,6 +56,7 @@ export const defaultPrizeList = <IPrizeConfig[]>[
         isShow: true,
         isUsed: false,
         frequency: 1,
+        category: [2,0],
     },
     {
         id: '003',
@@ -75,6 +78,7 @@ export const defaultPrizeList = <IPrizeConfig[]>[
         isShow: true,
         isUsed: false,
         frequency: 1,
+        category: [4,2],
     },
     {
         id: '004',
@@ -96,6 +100,7 @@ export const defaultPrizeList = <IPrizeConfig[]>[
         isShow: true,
         isUsed: false,
         frequency: 1,
+        category: [],
     },
     {
         id: '005',
@@ -117,6 +122,7 @@ export const defaultPrizeList = <IPrizeConfig[]>[
         isShow: true,
         isUsed: false,
         frequency: 1,
+        category: [],
     },
     {
       id: '006',
@@ -138,29 +144,10 @@ export const defaultPrizeList = <IPrizeConfig[]>[
       isShow: true,
       isUsed: false,
       frequency: 1,
+      category: [],
   }
 ]
-export const defaultCurrentPrize = <IPrizeConfig>{
-    id: '001',
-    name: '三等奖',
-    sort: 1,
-    isAll: false,
-    count: 12,
-    isUsedCount: 0,
-    picture: {
-        id: '2',
-        name: '三等奖',
-        url: 'https://24years.top/resource/image/image3.png'
-    },
-    separateCount: {
-        enable: true,
-        countList: []
-    },
-    desc: '三等奖',
-    isShow: true,
-    isUsed: false,
-    frequency: 1,
-}
+export const defaultCurrentPrize = null as Nullable<IPrizeConfig>
 
 export const defaultTemporaryPrize = <IPrizeConfig>{
     id: '',
@@ -182,6 +169,7 @@ export const defaultTemporaryPrize = <IPrizeConfig>{
     isShow: false,
     isUsed: false,
     frequency: 1,
+    category: [],
 }
 
 export const defaultImageList = [

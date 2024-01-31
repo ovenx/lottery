@@ -132,6 +132,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <div>
     <dialog id="my_modal_1" ref="resetDataDialog" class="border-none modal">
         <div class="modal-box">
             <h3 class="text-lg font-bold">提示!</h3>
@@ -191,6 +192,7 @@ onMounted(() => {
         </div>
         <DaiysuiTable :tableColumns="tableColumns" :data="allPersonList"></DaiysuiTable>
     </div>
+  </div>
 </template>
 
 <style lang='scss' scoped></style>

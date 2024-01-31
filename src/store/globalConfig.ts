@@ -8,7 +8,7 @@ export const useGlobalConfig = defineStore('global', {
             globalConfig: {
                 rowCount: 17,
                 isSHowPrizeList: true,
-                topTitle: '江西合一云数据2024年年会抽奖',
+                topTitle: '江西合一云数据科技股份有限公司2024年度年会抽奖',
                 theme: {
                     name: 'dracula',
                     detail: { primary: '#0f5fd3' },
@@ -79,7 +79,7 @@ export const useGlobalConfig = defineStore('global', {
             return state.globalConfig.theme.patternList;
         },
         // 获取音乐列表
-        getMusicList(state) {
+        getMusicList() {
             return defaultMusicList;
         },
         // 获取当前音乐
