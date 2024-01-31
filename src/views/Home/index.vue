@@ -765,7 +765,7 @@ onUnmounted(() => {
     position: absolute;
     z-index: 100;
     width: 100%;
-    bottom: 50px;
+    bottom: 40px;
     text-align: center;
     margin: 0 auto;
     font-size: 32px;

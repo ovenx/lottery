@@ -240,12 +240,12 @@ onMounted(() => {
                                 <svg-icon name="arrow_left" class="w-full h-full"></svg-icon>
                             </div>
                         </div>
-                        <div class="tooltip tooltip-right" data-tip="添加抽奖">
+                        <!-- <div class="tooltip tooltip-right" data-tip="添加抽奖">
                             <div class="flex items-center w-6 h-8 rounded-r-lg cursor-pointer prize-option bg-slate-500/50"
                                 @click="addTemporaryPrize">
                                 <svg-icon name="add" class="w-full h-full"></svg-icon>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </transition>
