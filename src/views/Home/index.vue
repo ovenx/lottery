@@ -699,8 +699,7 @@ onUnmounted(() => {
                 <div v-if="currentPrize && luckyID" class="text-sm text-pink-400 font-bold mr-4">
                   剩余数量 {{ currentPrize.count - currentPrize.isUsedCount }}
                 </div>
-                <input type="number" v-model="luckyCount" placeholder="抽奖数量" 
-                        class="w-full max-w-xs p-0 m-0 input-sm input input-bordered" />
+                <input type="number" v-model="luckyCount" placeholder="抽奖数量" class="w-full max-w-xs p-0 m-0 input-sm input input-bordered" />
               </div>
               <div class="start" >
 
@@ -721,7 +720,7 @@ onUnmounted(() => {
 
             <div v-if="currentStatus == 3" class="flex justify-center gap-6 enStop">
                 <div class="start">
-                    <button class="btn-start" @click="continueLottery"><strong>继续！</strong>
+                    <button class="btn-start" @click="continueLottery"><strong>确认抽取！</strong>
                         <div id="container-stars">
                             <div id="stars"></div>
                         </div>

@@ -77,7 +77,7 @@ const deleteAll = () => {
 const delPersonItem = (row: IPersonConfig) => {
     personConfig.deletePerson(row)
 }
-
+const isWin = ref(-1)
 const tableColumns = [
     {
         label: '编号',
@@ -183,6 +183,11 @@ onMounted(() => {
             </div>
             <button class="btn btn-error btn-sm" @click="resetDataDialog.showModal()">重置人员数据</button>
             <button class="btn btn-accent btn-sm" @click="exportData">导出结果</button>
+            <select class="select select-warning select-sm mr-4" v-model="isWin">
+              <option selected  :value="-1">所有</option>
+              <option :value="0">未中奖</option>
+              <option :value="1">已中奖</option>
+            </select>
             <div>
                 <span>中奖人数：</span>
                 <span>{{ alreadyPersonList.length }}</span>
@@ -190,7 +195,7 @@ onMounted(() => {
                 <span>{{ allPersonList.length }}</span>
             </div>
         </div>
-        <DaiysuiTable :tableColumns="tableColumns" :data="allPersonList"></DaiysuiTable>
+        <DaiysuiTable :tableColumns="tableColumns" :data="allPersonList.filter(v => isWin === -1 || Number(v.isWin) == isWin)"></DaiysuiTable>
     </div>
   </div>
 </template>

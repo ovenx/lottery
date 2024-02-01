@@ -40,6 +40,7 @@ const addPrize = () => {
         isUsed: false,
         isShow: true,
         frequency: 1,
+        category: [],
     }
     prizeConfig.addPrizeConfig(defaultPrizeCOnfig)
 }

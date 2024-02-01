@@ -138,6 +138,9 @@ export const usePersonConfig = defineStore('person', {
         // 删除指定人员
         deletePerson(person: IPersonConfig) {
             if (person.id != undefined || person.id != null) {
+                if (person.isWin) {
+                  this.moveAlreadyToNot(person)
+                }
                 this.personConfig.allPersonList = this.personConfig.allPersonList.filter((item: IPersonConfig) => item.id !== person.id);
                 this.personConfig.alreadyPersonList = this.personConfig.alreadyPersonList.filter((item: IPersonConfig) => item.id !== person.id);
             }

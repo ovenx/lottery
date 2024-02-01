@@ -17,7 +17,7 @@ onMounted(() => {
 </script>
 
 <template>
-<div class="w-3/4 mb-10 ml-3">
+<div class="w-3/4 mb-10 ml-3 bg-gray-200 p-10">
     <div class="markdown-body" v-dompurify-html="readmeHtml"></div>
 </div>
 </template>
