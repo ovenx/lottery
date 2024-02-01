@@ -30,7 +30,11 @@ onUnmounted(()=>{
 </script>
 
 <template>
-    <div class="w-screen h-screen overflow-hidden bg-transparent" ref="starRef"></div>
+    <div class="w-screen h-screen overflow-hidden bg-transparent bg-cover bg-img" ref="starRef"></div>
 </template>
 
-<style lang='scss' scoped></style>
+<style lang='scss' scoped>
+.bg-img{
+  background-image: url('../../assets/bg.jpg');
+}
+</style>
