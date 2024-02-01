@@ -434,7 +434,7 @@ const startLottery = () => {
         for (const index in currentPrize.value.category) {
           if (currentPrize.value.category[index] > usedCateogryTarget[index].length) {
             personPool.value = notPersonList.value.filter(v => v.category == Number(index)+1 && !usedCateogryTarget[Number(index)].includes(v.id))
-            const randomIndex = Math.round(Math.random() * (personPool.value.length - 1))
+            const randomIndex = Math.floor(Math.random() * personPool.value.length)
             luckyTargets.value.push(personPool.value[randomIndex])
             usedCateogryTarget[index].push(personPool.value[randomIndex].id)
             personPool.value.splice(randomIndex, 1)
@@ -443,7 +443,7 @@ const startLottery = () => {
         }
       } else {
         if (personPool.value.length > 0) {
-          const randomIndex = Math.round(Math.random() * (personPool.value.length - 1))
+          const randomIndex = Math.floor(Math.random() * personPool.value.length)
           luckyTargets.value.push(personPool.value[randomIndex])
           personPool.value.splice(randomIndex, 1)
         }
