@@ -166,7 +166,10 @@ export const usePersonConfig = defineStore('person', {
               item.prizeId = []
             });
             const prizeConfig = usePrizeConfig()
-            prizeConfig.prizeConfig.prizeList = defaultPrizeList
+            prizeConfig.prizeConfig.prizeList.forEach((item: IPrizeConfig) => {
+              item.isUsed = false
+              item.isUsedCount = 0
+            })
             prizeConfig.prizeConfig.currentPrize = null
             this.personConfig.alreadyPersonList = [];
         },

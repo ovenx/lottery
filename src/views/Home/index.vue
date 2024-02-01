@@ -424,13 +424,15 @@ const startLottery = () => {
         return;
     }
     let usedCateogryTarget = [[] as number[], [] as number[]]
+    if (currentPrize.value.category.length > 0) {
+      for (const target of thisPrizePersonList.value) {
+        usedCateogryTarget[target.category - 1].push(target.id)
+      }
+    }
     for (let i = 0; i < luckyCount.value; i++) {
       if (currentPrize.value.category.length > 0) {
-        for (const target of thisPrizePersonList.value) {
-          usedCateogryTarget[target.category - 1].push(target.id)
-        }
         for (const index in currentPrize.value.category) {
-          if (currentPrize.value.category[index] - usedCateogryTarget[index].length) {
+          if (currentPrize.value.category[index] > usedCateogryTarget[index].length) {
             personPool.value = notPersonList.value.filter(v => v.category == Number(index)+1 && !usedCateogryTarget[Number(index)].includes(v.id))
             const randomIndex = Math.round(Math.random() * (personPool.value.length - 1))
             luckyTargets.value.push(personPool.value[randomIndex])
