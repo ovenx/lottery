@@ -516,6 +516,7 @@ const stopLottery = async () => {
     rollBall(0, 1)
 
     const windowSize = { width: window.innerWidth, height: window.innerHeight }
+    luckyCardList.value = []
     luckyTargets.value.forEach((person: IPersonConfig, index: number) => {
         let cardIndex = selectCard(luckyCardList.value, tableData.value.length, person.id)
         luckyCardList.value.push(cardIndex)
