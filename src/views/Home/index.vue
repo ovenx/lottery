@@ -6,6 +6,7 @@ import StarsBackground from '@/components/StarsBackground/index.vue'
 import confetti from 'canvas-confetti'
 import { filterData, selectCard } from '@/utils'
 import { rgba } from '@/utils/color'
+import { specialCate } from '@/store/data'
 import { IPersonConfig } from '@/types/storeType'
 // import * as THREE from 'three'
 import { Scene, PerspectiveCamera, Object3D, Vector3 } from 'three'
@@ -354,10 +355,16 @@ function resetCamera() {
 function render() {
     renderer.value.render(scene.value, camera.value);
 }
+
+
+const quitDialogRef = ref()
+const enterLaoding = ref(false)
 const enterLottery = async () => {
+    enterLaoding.value = true
     if (!canOperate.value) {
-        return
+      return
     }
+   
     if (!intervalTimer.value && allPersonList.value.length > 0) {
         randomBallData()
     }
@@ -375,38 +382,39 @@ const enterLottery = async () => {
 }
 // 开始抽奖
 const startLottery = () => {
-    if (!canOperate.value || !currentPrize.value) {
+    if (!canOperate.value) {
         return
     }
-    if (luckyID.value == '') {
+    if (luckyID.value == '' || !currentPrize.value) {
       toast.open({
-            message: '请选择奖项',
-            type: 'warning',
-            position: 'top-right',
-            duration: 10000
-        })
-        return
+        message: '请选择奖项',
+        type: 'warning',
+        position: 'top-right',
+        duration: 10000
+      })
+      return
     }
+
     // 验证是否已抽完全部奖项
     if (currentPrize.value.isUsed) {
-        toast.open({
-            message: '抽奖抽完了',
-            type: 'warning',
-            position: 'top-right',
-            duration: 10000
-        })
-        return
+      toast.open({
+        message: '该奖品抽完了',
+        type: 'warning',
+        position: 'top-right',
+        duration: 10000
+      })
+      return
     }
 
     let leftover = currentPrize.value.count - currentPrize.value.isUsedCount
     if (luckyCount.value > leftover) {
       toast.open({
-            message: '奖品数量不足',
-            type: 'warning',
-            position: 'top-right',
-            duration: 10000
-        })
-        return;
+        message: '奖品数量不足',
+        type: 'warning',
+        position: 'top-right',
+        duration: 10000
+      })
+      return;
     }
   
 
@@ -415,45 +423,84 @@ const startLottery = () => {
 
     // 验证抽奖人数是否还够
     if (personPool.value.length < luckyCount.value) {
-        toast.open({
-            message: '抽奖人数不够',
-            type: 'warning',
-            position: 'top-right',
-            duration: 10000
-        })
-        return;
+      toast.open({
+        message: '抽奖人数不够',
+        type: 'warning',
+        position: 'top-right',
+        duration: 10000
+      })
+      return;
     }
-    let usedCateogryTarget = [[] as number[], [] as number[]]
+    let usedCateogryNum = {
+      0: 0,
+      1: 0,
+      2: 0,
+    } as Record<number, number>
+
+    let leftCategoryNum = {
+      0: 0,
+      1: 0,
+      2: 0,
+    } as Record<number, number>
+
+    // 改类别已中奖名单
     if (currentPrize.value.category.length > 0) {
       for (const target of thisPrizePersonList.value) {
-        usedCateogryTarget[target.category - 1].push(target.id)
+        usedCateogryNum[target.category]++
+      }
+    } else {
+      for (const target of notPersonList.value) {
+        leftCategoryNum[target.category]++
       }
     }
     for (let i = 0; i < luckyCount.value; i++) {
       if (currentPrize.value.category.length > 0) {
-        for (const index in currentPrize.value.category) {
-          if (currentPrize.value.category[index] > usedCateogryTarget[index].length) {
-            personPool.value = notPersonList.value.filter(v => v.category == Number(index)+1 && !usedCateogryTarget[Number(index)].includes(v.id))
+        for (const cateItem of currentPrize.value.category) {
+          let cateNum  = 0
+          for (const subCate of cateItem.cate) {
+            cateNum += usedCateogryNum[subCate]
+          }
+          if (cateItem.num > cateNum) {
+            personPool.value = personPool.value.filter(v => cateItem.cate.includes(v.category))
             const randomIndex = Math.floor(Math.random() * personPool.value.length)
             luckyTargets.value.push(personPool.value[randomIndex])
-            usedCateogryTarget[index].push(personPool.value[randomIndex].id)
+            usedCateogryNum[personPool.value[randomIndex].category]++
             personPool.value.splice(randomIndex, 1)
             break
           }
         }
       } else {
         if (personPool.value.length > 0) {
+          let expectedCate = []
+          for (const cate of specialCate) {
+            if (leftCategoryNum[cate] <= 1) {
+              expectedCate.push(cate)
+            }
+          }
+          if (expectedCate.length > 0) {
+            personPool.value = personPool.value.filter(v => !expectedCate.includes(v.category))
+            if (personPool.value.length == 0) {
+              toast.open({
+                message: '抽奖人数不够',
+                type: 'warning',
+                position: 'top-right',
+                duration: 10000
+              })
+              return
+            }
+          }
           const randomIndex = Math.floor(Math.random() * personPool.value.length)
           luckyTargets.value.push(personPool.value[randomIndex])
+          leftCategoryNum[personPool.value[randomIndex].category]--
           personPool.value.splice(randomIndex, 1)
         }
       }
     }
     toast.open({
-        message: `现在抽取${currentPrize.value.name} ${luckyCount.value}人`,
-        type:'default',
-        position: 'top-right',
-        duration: 8000
+      message: `现在抽取${currentPrize.value.name} ${luckyCount.value}人`,
+      type:'default',
+      position: 'top-right',
+      duration: 8000
     })
     currentStatus.value = 2
     rollBall(10, 3000)
@@ -473,7 +520,7 @@ const stopLottery = async () => {
         let cardIndex = selectCard(luckyCardList.value, tableData.value.length, person.id)
         luckyCardList.value.push(cardIndex)
         let item = objects.value[cardIndex]
-        const { xTable, yTable } = useElementPosition(item, rowCount.value, { width: cardSize.value.width * 2, height: cardSize.value.height * 2 }, windowSize, index)
+        const { xTable, yTable } = useElementPosition(item, rowCount.value, { width: cardSize.value.width * 1.8, height: cardSize.value.height * 1.5 }, windowSize, index)
         new TWEEN.Tween(item.position)
             .to({
                 x: xTable,
@@ -482,7 +529,7 @@ const stopLottery = async () => {
             }, 1200)
             .easing(TWEEN.Easing.Exponential.InOut)
             .onStart(() => {
-                item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cardSize.value.width * 2, height: cardSize.value.height * 2 }, textSize.value * 2, 'lucky')
+                item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cardSize.value.width * 1.8, height: cardSize.value.height * 1.5 }, textSize.value * 2, 'lucky')
             })
             .start()
             .onComplete(() => {
@@ -518,17 +565,16 @@ const continueLottery = async () => {
     //         }
     //     }
     // }
-    currentPrize.value.isUsedCount += luckyCount.value
-    
-    console.log(currentPrize.value.isUsedCount)
+    currentPrize.value.isUsedCount += luckyTargets.value.length
     if (currentPrize.value.isUsedCount >= currentPrize.value.count) {
-        currentPrize.value.isUsed = true
-        currentPrize.value.isUsedCount = currentPrize.value.count
+      currentPrize.value.isUsed = true
+      currentPrize.value.isUsedCount = currentPrize.value.count
     }
     personConfig.addAlreadyPersonList(luckyTargets.value, currentPrize.value)
     prizeConfig.updatePrizeConfig(currentPrize.value)
     luckyID.value = ''
     luckyCount.value = 1
+    luckyTargets.value= []
     await enterLottery()
 }
 const quitLottery = () => {
@@ -688,8 +734,14 @@ onUnmounted(() => {
 
         <!-- 选中菜单结构 start-->
         <div id="menu">
-            <button class="btn-end " @click="enterLottery" v-if="currentStatus == 0 && tableData.length > 0">进入抽奖</button>
-
+            <button class="btn-end" @click="enterLottery" v-if="currentStatus == 0 && tableData.length > 0">
+              <div class="flex items-center">
+                <div style="margin-right:10px" v-if="enterLaoding" class="loading loading-spinner"></div>
+                <div v-if="!enterLaoding">进入抽奖</div>
+                <div v-else="enterLaoding">加载中</div>
+              </div>
+            </button>
+            
             <div v-if="currentStatus == 1">
 
           
@@ -698,7 +750,7 @@ onUnmounted(() => {
                   <option disabled selected  value="">选择奖项</option>
                   <option v-for="item in prizeConfig.prizeConfig.prizeList"  :value="item.id">{{ item.name }}</option>
                 </select>
-                <div v-if="currentPrize && luckyID" class="text-sm text-pink-400 font-bold mr-4">
+                <div v-if="currentPrize && luckyID" class="text-sm text-white font-bold mr-4">
                   剩余数量 {{ currentPrize.count - currentPrize.isUsedCount }}
                 </div>
                 <input type="number" v-model="luckyCount" placeholder="抽奖数量" class="w-full max-w-xs p-0 m-0 input-sm input input-bordered" />
@@ -735,7 +787,7 @@ onUnmounted(() => {
                 </div>
 
                 <div class="start">
-                    <button class="btn-cancel" @click="quitLottery"><strong>取消</strong>
+                    <button class="btn-cancel" @click="quitDialogRef.showModal()"><strong>取消</strong>
                         <div id="container-stars">
                             <div id="stars"></div>
                         </div>
@@ -757,6 +809,20 @@ onUnmounted(() => {
 
     <!-- <LuckyView :luckyPersonList="luckyTargets"  ref="LuckyViewRef"></LuckyView> -->
     <!-- <PlayMusic class="absolute right-0 bottom-1/2"></PlayMusic> -->
+    <dialog id="my_modal_1" class="border-none modal" ref="quitDialogRef" >
+        <div class="modal-box">
+            <h3 class="text-lg font-bold">提示!</h3>
+            <p class="py-4">该操作会取消本次抽奖，是否继续？</p>
+            <div class="modal-action">
+                <form method="dialog" class="flex gap-3">
+                    <!-- if there is a button in form, it will close the modal -->
+                    <button class="btn" @click="quitDialogRef.close()">取消</button>
+                    <button class="btn" @click="quitLottery">确定</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
+
     <PrizeList class="absolute left-0 top-32"></PrizeList>
   </div>
 </template>

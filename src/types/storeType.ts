@@ -35,11 +35,16 @@ export interface IPrizeConfig {
         enable: boolean,
         countList: Separate[],
     };
-    category: number[],
+    category: IPrizeCategory[],
     desc: string;
     isShow: boolean;
     isUsed: boolean,
     frequency: number;
+}
+
+export interface IPrizeCategory  {
+  cate: number[]
+  num: number
 }
 export interface IMusic {
     id: string,

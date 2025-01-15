@@ -87,7 +87,7 @@ const resetPattern = () => {
 
 const resetData=()=>{
     globalConfig.reset();
-    personConfig.reset();
+    //personConfig.reset();
     prizeConfig.resetDefault();
     // 刷新页面
     window.location.reload()

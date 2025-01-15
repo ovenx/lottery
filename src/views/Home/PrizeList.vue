@@ -142,7 +142,7 @@ onMounted(() => {
                                 </div>
                             </li>
                         </ul>
-                        <button v-else class="btn btn-secondary btn-xs">设置</button>
+                        <!-- <button v-else class="btn btn-secondary btn-xs">设置</button> -->
                     </div>
                 </label>
                     <label class="flex w-full max-w-xs">

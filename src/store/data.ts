@@ -22,19 +22,22 @@ export const defaultPrizeList = <IPrizeConfig[]>[
         count: 1,
         isUsedCount: 0,
         picture: {
-            id: '2',
-            name: '特等奖',
-            url: image1
+          id: '2',
+          name: '特等奖',
+          url: image1
         },
         separateCount: {
-            enable: true,
-            countList: []
+          enable: true,
+          countList: []
         },
         desc: '特等奖',
         isShow: true,
         isUsed: false,
         frequency: 1,
-        category: [1,0],
+        category: [
+          {cate:[1], num:1},
+          {cate:[2,0], num:0},
+        ],
     },
     {
         id: '002',
@@ -44,9 +47,9 @@ export const defaultPrizeList = <IPrizeConfig[]>[
         count: 2,
         isUsedCount: 0,
         picture: {
-            id: '1',
-            name: '一等奖',
-            url: image1
+          id: '1',
+          name: '一等奖',
+          url: image1
         },
         separateCount: {
           enable: false,
@@ -56,7 +59,7 @@ export const defaultPrizeList = <IPrizeConfig[]>[
         isShow: true,
         isUsed: false,
         frequency: 1,
-        category: [2,0],
+        category: [],
     },
     {
         id: '003',
@@ -78,14 +81,17 @@ export const defaultPrizeList = <IPrizeConfig[]>[
         isShow: true,
         isUsed: false,
         frequency: 1,
-        category: [4,2],
+        category: [
+          {cate:[2], num:1},
+          {cate:[0,1], num:5},
+        ],
     },
     {
         id: '004',
         name: '三等奖',
         sort: 4,
         isAll: false,
-        count: 12,
+        count: 10,
         isUsedCount: 0,
         picture: {
           id: '4',
@@ -126,27 +132,32 @@ export const defaultPrizeList = <IPrizeConfig[]>[
     },
     {
       id: '006',
-      name: '其它',
+      name: '特别奖',
       sort: 5,
       isAll: false,
-      count: 30,
+      count: 1,
       isUsedCount: 0,
       picture: {
         id: '4',
-        name: '其它',
+        name: '特别奖',
         url: image2,
       },
       separateCount: {
-          enable: false,
-          countList: []
+        enable: false,
+        countList: []
       },
-      desc: '其它',
+      desc: '特别奖',
       isShow: true,
       isUsed: false,
       frequency: 1,
       category: [],
-  }
+    }
 ]
+
+
+export const specialCate = [1, 2]
+
+
 export const defaultCurrentPrize = null as Nullable<IPrizeConfig>
 
 export const defaultTemporaryPrize = <IPrizeConfig>{
@@ -176,27 +187,17 @@ export const defaultImageList = [
     {
         id: '0',
         name: '一等奖',
-        url: 'https://24years.top/resource/image/image1.png'
+        url: image1,
     },
     {
         id: '1',
         name: '二等奖',
-        url: 'https://24years.top/resource/image/image2.png'
+        url: image2,
     },
-    {
-        id: '2',
-        name: '三等奖',
-        url: 'https://24years.top/resource/image/image3.png'
-    },
-    {
-        id: '3',
-        name: '超级奖',
-        url: 'https://24years.top/resource/image/image4.png'
-    },
-    {
-        id: '4',
-        name: '特别奖',
-        url: 'https://24years.top/resource/image/image5.png'
-    }
 ]
-export const defaultPatternList = [19, 20, 21, 38, 55, 54, 53, 70, 87, 88, 89, 23, 40, 57, 74, 91, 92, 93, 76, 59, 42, 25, 24, 27, 28, 29, 46, 63, 62, 61, 78, 95, 96, 97, 31, 48, 65, 66, 67, 33, 50, 84, 101]
+export const defaultPatternList =  [
+  19,  20,  21,  38,  55,  54,  53,  70,  87,  88,  89,  23,  40,  57,
+  74,  91,  92,  93,  76,  59,  42,  25,  24,  27,  28,  29,  46,  63,
+  62,  61,  78,  95,  96,  97,  31,  48,  65,  67,  33,  84, 101,  32,
+  66, 100,  99
+]

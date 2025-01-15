@@ -8,7 +8,7 @@ export const useGlobalConfig = defineStore('global', {
             globalConfig: {
                 rowCount: 17,
                 isSHowPrizeList: true,
-                topTitle: '江西合一云数据科技股份有限公司2024年度年会抽奖',
+                topTitle: '江西合一云数据科技股份有限公司2025年度年会抽奖',
                 theme: {
                     name: 'dracula',
                     detail: { primary: '#0f5fd3' },
@@ -213,7 +213,7 @@ export const useGlobalConfig = defineStore('global', {
             this.globalConfig = {
                 rowCount: 17,
                 isSHowPrizeList: true,
-                topTitle: '江西合一云数据2024年年会抽奖',
+                topTitle: '江西合一云数据2025年度年会抽奖',
                 theme: {
                     name: 'dracula',
                     detail: { primary: '#0f5fd3' },
@@ -221,7 +221,7 @@ export const useGlobalConfig = defineStore('global', {
                     cardWidth: 140,
                     cardHeight: 200,
                     textColor: '#ffffff',
-                    luckyCardColor: '#ECB1AC',
+                    luckyCardColor: '#f67c01',
                     textSize: 30,
                     patternColor: '#1b66c9',
                     patternList: defaultPatternList as number[],

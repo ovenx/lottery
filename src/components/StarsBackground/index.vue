@@ -35,6 +35,6 @@ onUnmounted(()=>{
 
 <style lang='scss' scoped>
 .bg-img{
-  background-image: url('../../assets/bg.jpg');
+  background-image: url('../../assets/bg.png');
 }
 </style>
