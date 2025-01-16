@@ -105,7 +105,7 @@ const init = () => {
     renderer.value.setSize(width, height * 0.9)
     renderer.value.domElement.style.position = 'absolute';
     // 垂直居中
-    renderer.value.domElement.style.paddingTop = '50px'
+    renderer.value.domElement.style.paddingTop = '0px'
     renderer.value.domElement.style.top = '50%';
     renderer.value.domElement.style.left = '50%';
     renderer.value.domElement.style.transform = 'translate(-50%, -50%)';
@@ -417,7 +417,7 @@ const startLottery = () => {
       return;
     }
   
-
+    luckyTargets.value = []
     personPool.value = currentPrize.value.isAll ? notThisPrizePersonList.value : notPersonList.value
    
 
@@ -444,16 +444,19 @@ const startLottery = () => {
     } as Record<number, number>
 
     // 改类别已中奖名单
-    if (currentPrize.value.category.length > 0) {
-      for (const target of thisPrizePersonList.value) {
-        usedCateogryNum[target.category]++
-      }
-    } else {
-      for (const target of notPersonList.value) {
-        leftCategoryNum[target.category]++
-      }
+    for (const target of thisPrizePersonList.value) {
+      usedCateogryNum[target.category]++
     }
+   
+    for (const target of notPersonList.value) {
+      leftCategoryNum[target.category]++
+    }
+    
+    let choosedIDs = [] as number[]
     for (let i = 0; i < luckyCount.value; i++) {
+      // if (personPool.value.length == 0) {
+      //   continue
+      // }
       if (currentPrize.value.category.length > 0) {
         for (const cateItem of currentPrize.value.category) {
           let cateNum  = 0
@@ -461,24 +464,13 @@ const startLottery = () => {
             cateNum += usedCateogryNum[subCate]
           }
           if (cateItem.num > cateNum) {
-            personPool.value = personPool.value.filter(v => cateItem.cate.includes(v.category))
-            const randomIndex = Math.floor(Math.random() * personPool.value.length)
-            luckyTargets.value.push(personPool.value[randomIndex])
-            usedCateogryNum[personPool.value[randomIndex].category]++
-            personPool.value.splice(randomIndex, 1)
-            break
-          }
-        }
-      } else {
-        if (personPool.value.length > 0) {
-          let expectedCate = []
-          for (const cate of specialCate) {
-            if (leftCategoryNum[cate] <= 1) {
-              expectedCate.push(cate)
+            let expectedCate = [] as number[]
+            if (leftCategoryNum[1] <= 1 && currentPrize.value.id == '002' && !prizeConfig.prizeConfig.prizeList[0].isUsed) {
+              expectedCate.push(1)
             }
-          }
-          if (expectedCate.length > 0) {
-            personPool.value = personPool.value.filter(v => !expectedCate.includes(v.category))
+            personPool.value = notPersonList.value.filter(
+              v => cateItem.cate.includes(v.category) && !choosedIDs.includes(v.id) && !expectedCate.includes(v.category)
+            )
             if (personPool.value.length == 0) {
               toast.open({
                 message: '抽奖人数不够',
@@ -486,14 +478,40 @@ const startLottery = () => {
                 position: 'top-right',
                 duration: 10000
               })
+
               return
             }
+            const randomIndex = Math.floor(Math.random() * personPool.value.length)
+            luckyTargets.value.push(personPool.value[randomIndex])
+            usedCateogryNum[personPool.value[randomIndex].category]++
+            choosedIDs.push(personPool.value[randomIndex].id)
+            leftCategoryNum[personPool.value[randomIndex].category]--
+            personPool.value.splice(randomIndex, 1)
+            break
           }
-          const randomIndex = Math.floor(Math.random() * personPool.value.length)
-          luckyTargets.value.push(personPool.value[randomIndex])
-          leftCategoryNum[personPool.value[randomIndex].category]--
-          personPool.value.splice(randomIndex, 1)
         }
+      } else {
+        let expectedCate = [] as number[]
+        for (const cate in specialCate) {
+          if (leftCategoryNum[Number(cate)] <= 1 && !prizeConfig.prizeConfig.prizeList[specialCate[cate]].isUsed) {
+            expectedCate.push(Number(cate))
+          }
+        }
+        personPool.value = notPersonList.value.filter(v => !expectedCate.includes(v.category) && !choosedIDs.includes(v.id))
+        if (personPool.value.length == 0) {
+          toast.open({
+            message: '抽奖人数不够',
+            type: 'warning',
+            position: 'top-right',
+            duration: 10000
+          })
+          return
+        }
+        const randomIndex = Math.floor(Math.random() * personPool.value.length)
+        luckyTargets.value.push(personPool.value[randomIndex])
+        leftCategoryNum[personPool.value[randomIndex].category]--
+        choosedIDs.push(personPool.value[randomIndex].id)
+        personPool.value.splice(randomIndex, 1)
       }
     }
     toast.open({

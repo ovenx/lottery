@@ -155,7 +155,10 @@ export const defaultPrizeList = <IPrizeConfig[]>[
 ]
 
 
-export const specialCate = [1, 2]
+export const specialCate = {
+  1: 0,
+  2: 2,
+} as Record<number,number>
 
 
 export const defaultCurrentPrize = null as Nullable<IPrizeConfig>
